@@ -1,0 +1,49 @@
+# 롤 팀원 관리 사이트
+
+닉네임#태그와 주라인/부라인/기피라인을 등록하면 팀원 슬롯(프로필 아이콘)이 생성되고,
+아이콘을 클릭하면 라이엇 공식 API로 조회한 **티어**와 **모스트 챔피언 TOP 3**를 보여주는 사이트입니다.
+
+## 1. 라이엇 API 키 발급
+
+1. https://developer.riotgames.com/ 접속 후 라이엇 계정으로 로그인
+2. 로그인 후 상단의 **Development API Key** 복사 (24시간마다 재발급 필요)
+3. 실제 서비스로 계속 쓰려면 "Register Product" → Production Key 신청 (검수 필요)
+
+## 2. 로컬(PC)에서 실행
+
+```bash
+npm install
+cp .env.example .env
+# .env 파일에 RIOT_API_KEY=발급받은키 입력
+npm start
+```
+
+브라우저에서 http://localhost:3000 접속
+
+## 3. 아이패드로 배포 (Render)
+
+1. github.com에서 새 저장소 생성 → "Add file → Upload files"로 이 폴더의 파일들 업로드
+   (`.env.example`은 올리지 말고, API 키는 Render 환경변수로 따로 등록)
+2. render.com 가입 → GitHub 저장소 연동 → 새 Web Service 생성
+3. Build Command: `npm install` / Start Command: `npm start`
+4. Environment Variables에 `RIOT_API_KEY` 추가
+5. 배포 완료되면 `https://프로젝트이름.onrender.com` 주소가 생성됨 → 팀원들에게 공유
+
+## 4. 기능 설명
+
+1. **팀원 등록**: 닉네임 + 태그 입력, 주라인/부라인/기피라인 선택(탑/정글/미드/원딜/서포터) 후 등록
+   → 라이엇 API로 puuid와 프로필 아이콘을 조회해서 팀원 슬롯에 추가
+2. **팀원 슬롯**: 등록된 팀원은 프로필 아이콘 + 닉네임 + 주/부라인이 표시된 원형 아이콘으로 명단에 표시됨
+3. **상세 정보 (아이콘 클릭)**: 클릭 시 모달 팝업으로
+   - 솔로랭크/자유랭크 티어
+   - 모스트 챔피언 TOP 3 (챔피언 아이콘, 숙련도 레벨, 숙련도 점수)
+   를 실시간 조회해서 보여줌
+
+## 5. 주의사항
+
+- **팀원 명단은 서버 메모리에 저장**되며, 서버를 재시작하면 초기화됩니다.
+  계속 유지하려면 SQLite 등 DB를 붙여서 `roster` 배열 대신 저장하도록 확장하면 됩니다.
+- **Rate Limit**: Development Key는 초당 20회 / 2분당 100회 제한이 있습니다.
+- **챔피언/아이콘 이미지**는 라이엇의 Data Dragon(무료 정적 리소스)에서 자동으로 최신 버전을 받아옵니다.
+- 라우팅 구분: `account-v1`, `champion-mastery-v4`, `match-v5`는 지역(region, 한국=asia),
+  `summoner-v4`, `league-v4`는 플랫폼(platform, 한국=kr) 라우팅을 사용합니다.
