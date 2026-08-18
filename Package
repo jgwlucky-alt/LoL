@@ -1,0 +1,15 @@
+{
+  "name": "lol-naejeon-roster-site",
+  "version": "1.0.0",
+  "description": "롤 내전 팀원 명단 사이트 - 닉네임 검색 시 티어 & 자체 PS스코어 표시",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
+  }
+}
